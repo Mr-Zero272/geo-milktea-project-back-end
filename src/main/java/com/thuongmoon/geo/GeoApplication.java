@@ -10,12 +10,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.thuongmoon.geo.models.MilkTeaShop;
-import com.thuongmoon.geo.repositories.MGeoRespository;
+import com.thuongmoon.geo.repositories.MilkTeaShopRepository;
 
 @SpringBootApplication
 public class GeoApplication{
 	@Autowired
-	private MGeoRespository respository;
+	private MilkTeaShopRepository respository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(GeoApplication.class, args);

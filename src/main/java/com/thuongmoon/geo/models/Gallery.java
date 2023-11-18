@@ -2,6 +2,8 @@ package com.thuongmoon.geo.models;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +34,7 @@ public class Gallery implements Serializable {
 	private String imgName;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Comment comment;
 	
 	public int hashCode() {

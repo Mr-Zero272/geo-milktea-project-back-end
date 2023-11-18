@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -33,6 +33,7 @@ public class Road implements Serializable {
 	
 	private String name;
 	private Geometry position;
+	private boolean isApproved;
 	
 	@OneToMany(mappedBy = "road", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MilkTeaShop> milkTeaShops = new ArrayList<>();

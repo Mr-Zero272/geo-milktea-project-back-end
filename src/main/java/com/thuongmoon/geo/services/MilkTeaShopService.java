@@ -7,6 +7,8 @@ import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,22 +17,22 @@ import com.thuongmoon.geo.dto.EleMapDto;
 import com.thuongmoon.geo.dto.geoJsonRequest;
 import com.thuongmoon.geo.helpers.GeometryHelper;
 import com.thuongmoon.geo.models.MilkTeaShop;
-import com.thuongmoon.geo.repositories.MGeoRespository;
+import com.thuongmoon.geo.repositories.MilkTeaShopRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class GeoService {
+public class MilkTeaShopService {
 	@Autowired
-	private final MGeoRespository respository;
+	private final MilkTeaShopRepository milkTeaShopRespository;
 
 	public JSONObject getAllEleInMap() throws JsonMappingException, JsonProcessingException {
 		JSONObject geo = new JSONObject();
 		List<JSONObject> features = new ArrayList<JSONObject>();
 
-		for (MilkTeaShop item : respository.findAll()) {
+		for (MilkTeaShop item : milkTeaShopRespository.findAll()) {
 			String temp = GeometryHelper.convertJtsGeometryToGeoJson(item.getPosition()).toString();
 			// System.out.println(temp + "asdfasdfasdfsdf");
 			JSONObject geometryJson = new JSONObject(temp);
@@ -52,7 +54,7 @@ public class GeoService {
 		JSONObject geo = new JSONObject();
 		List<JSONObject> features = new ArrayList<JSONObject>();
 
-		MilkTeaShop mGeo = respository.findById(id).orElseThrow();
+		MilkTeaShop mGeo = milkTeaShopRespository.findById(id).orElseThrow();
 
 		String temp = GeometryHelper.convertJtsGeometryToGeoJson(mGeo.getPosition()).toString();
 		JSONObject geometryJson = new JSONObject(temp);
@@ -70,7 +72,7 @@ public class GeoService {
 	}
 
 	public List<EleMapDto> getAllEleMapDto() {
-		List<MilkTeaShop> geos = respository.findAll();
+		List<MilkTeaShop> geos = milkTeaShopRespository.findAll();
 		List<EleMapDto> eleMaps = new ArrayList<>();
 		for (MilkTeaShop geo : geos) {
 			eleMaps.add(new EleMapDto(geo.getId(), geo.getName()));
@@ -79,7 +81,7 @@ public class GeoService {
 	}
 
 	public JSONObject getEleMapByDistance(double lng, double lat, double range) throws ParseException {
-		List<Object[]> tempList = respository.findEleMapByPointAndRange(lng, lat, range);
+		List<Object[]> tempList = milkTeaShopRespository.findEleMapByPointAndRange(lng, lat, range);
 		for (Object[] aObjects : tempList) {
 			System.out.println(aObjects[0] + ", " + aObjects[1] + ", " + aObjects[2] + ", " + aObjects[3]);
 		}
@@ -111,7 +113,11 @@ public class GeoService {
 			Geometry lineString;
 			lineString = (Geometry) GeometryHelper.wktToGeometry(item.getWkt());
 			mGeo.setPosition(lineString);
-			respository.save(mGeo);
+			milkTeaShopRespository.save(mGeo);
 		}
+	}
+	
+	public Page<MilkTeaShop> searchByNameOrAddress(Pageable pageable, String q) {
+		return milkTeaShopRespository.findByNameOrAddress(pageable, q, q);
 	}
 }

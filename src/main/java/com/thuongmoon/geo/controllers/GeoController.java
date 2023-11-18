@@ -18,7 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.thuongmoon.geo.dto.EleMapDto;
 import com.thuongmoon.geo.dto.geoJsonRequest;
-import com.thuongmoon.geo.services.GeoService;
+import com.thuongmoon.geo.services.MilkTeaShopService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "")
 @RequiredArgsConstructor
 public class GeoController {
-	private final GeoService service;
+	private final MilkTeaShopService service;
 
 	@GetMapping("/geojson")
 	public ResponseEntity<String> getMap() throws JsonMappingException, JsonProcessingException {

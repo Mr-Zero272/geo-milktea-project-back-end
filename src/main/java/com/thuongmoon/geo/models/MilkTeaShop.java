@@ -1,11 +1,12 @@
 package com.thuongmoon.geo.models;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.locationtech.jts.geom.Geometry;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -45,26 +46,27 @@ public class MilkTeaShop implements Serializable {
 	@Column(length = 1000)
 	private String address;
 
-	private LocalDateTime openTime;
-	private LocalDateTime closeTime;
-	private int phoneNumber;
+	private String openTime;
+	private String closeTime;
+	private String phoneNumber;
 	
 	@Lob
 	@Column(length = 1000)
+	@JsonIgnore
 	private Geometry position;
 	
 	private boolean isApproved;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
 	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Road road;
 	
 	@OneToMany(mappedBy = "milkTeaShop", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment> comments = new ArrayList<>();
-	
-	
 	
 	@Override
 	public int hashCode() {
