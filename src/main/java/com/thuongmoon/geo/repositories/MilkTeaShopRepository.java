@@ -17,4 +17,7 @@ public interface MilkTeaShopRepository extends JpaRepository<MilkTeaShop, Long> 
 	
 	@Query("SELECT mts FROM MilkTeaShop mts WHERE mts.name LIKE %:name% OR mts.address LIKE %:address%")
 	Page<MilkTeaShop> findByNameOrAddress(Pageable pageable, String name, String address);
+	
+	@Query("SELECT mts FROM MilkTeaShop mts WHERE mts.name LIKE %:name% OR mts.address LIKE %:address% OR mts.road.name LIKE %:roadName%")
+	Page<MilkTeaShop> findByNameOrAddressOrRoadName(Pageable pageable, String name, String address, String roadName);
 }
