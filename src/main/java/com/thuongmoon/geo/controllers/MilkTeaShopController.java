@@ -1,8 +1,11 @@
 package com.thuongmoon.geo.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.thuongmoon.geo.dto.MilkTeaShopDTO;
 import com.thuongmoon.geo.dto.Pagination;
 import com.thuongmoon.geo.models.MilkTeaShop;
 import com.thuongmoon.geo.services.MilkTeaShopService;
@@ -45,4 +49,31 @@ public class MilkTeaShopController {
 	}
 	
 	
+//	@GetMapping("/searchByDistance")
+//    public String searchMilkTeaShopsByDistance(      
+//            @RequestParam("lng") double lng,
+//            @RequestParam("lat") double lat,
+//            @RequestParam("range") double range
+//    ) {
+//        try {     
+//            JSONObject result = milkTeaShopService.getEleMapByDistance(lng, lat, range);
+//            return result.toString();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "Error occurred while processing the request.";
+//        }
+//    }
+	
+
+	 @GetMapping("/nearby")
+	    public ResponseEntity<String> findMilkTeaShopsNearby(
+	            @RequestParam("lng") double lng,
+	            @RequestParam("lat") double lat,
+	            @RequestParam("range") double range,
+	            @RequestParam (value = "keyword", required = false) String keyword) {
+		 
+		JSONObject  milkTeaShops = milkTeaShopService.searchEleInMap(lng, lat, range,keyword);
+		     
+		 return new ResponseEntity<>(milkTeaShops.toString(), HttpStatus.OK);
+	    }
 }

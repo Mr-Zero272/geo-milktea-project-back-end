@@ -7,6 +7,8 @@ import java.util.List;
 import org.locationtech.jts.geom.Geometry;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -50,9 +52,8 @@ public class MilkTeaShop implements Serializable {
 	private String closeTime;
 	private String phoneNumber;
 	
-	@Lob
-	@Column(length = 1000)
-	@JsonIgnore
+	@Column(length = 1000 ,columnDefinition = "GEOMETRY")
+	@JsonRawValue
 	private Geometry position;
 	
 	private boolean isApproved;

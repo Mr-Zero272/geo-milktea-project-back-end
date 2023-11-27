@@ -31,9 +31,12 @@ public class Road implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String name;
-	private Geometry position;
 	private boolean isApproved;
+	
+	private String name;
+	
+	private Geometry position;
+	
 	
 	@OneToMany(mappedBy = "road", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MilkTeaShop> milkTeaShops = new ArrayList<>();

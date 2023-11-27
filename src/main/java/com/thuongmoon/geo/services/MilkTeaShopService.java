@@ -2,18 +2,21 @@ package com.thuongmoon.geo.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.thuongmoon.geo.dto.EleMapDto;
+import com.thuongmoon.geo.dto.MilkTeaShopDTO;
 import com.thuongmoon.geo.dto.geoJsonRequest;
 import com.thuongmoon.geo.helpers.GeometryHelper;
 import com.thuongmoon.geo.models.MilkTeaShop;
@@ -82,9 +85,9 @@ public class MilkTeaShopService {
 
 	public JSONObject getEleMapByDistance(double lng, double lat, double range) throws ParseException {
 		List<Object[]> tempList = milkTeaShopRespository.findEleMapByPointAndRange(lng, lat, range);
-		for (Object[] aObjects : tempList) {
-			System.out.println(aObjects[0] + ", " + aObjects[1] + ", " + aObjects[2] + ", " + aObjects[3]);
-		}
+//		for (Object[] aObjects : tempList) {
+//			System.out.println(aObjects[0] + ", " + aObjects[1] + ", " + aObjects[2] + ", " + aObjects[3]);
+//		}
 		JSONObject geo = new JSONObject();
 		List<JSONObject> features = new ArrayList<JSONObject>();
 
@@ -120,4 +123,57 @@ public class MilkTeaShopService {
 	public Page<MilkTeaShop> searchByNameOrAddress(Pageable pageable, String q) {
 		return milkTeaShopRespository.findByNameOrAddress(pageable, q, q);
 	}
+	
+	
+    
+	
+
+	public JSONObject searchEleInMap(double lng, double lat, double range,String keyword)  {
+	    JSONObject responseSearch = new JSONObject();
+
+	    List<MilkTeaShop> milkTeaShops;
+	    // Các thành phần JSON
+	    JSONObject geo = new JSONObject();
+	    List<JSONObject> features = new ArrayList<>();
+	    if (keyword != null && !keyword.isEmpty()) {
+	    	 milkTeaShops = milkTeaShopRespository.findMilkTeaShopByUserLocationAndRangeAndKeyword(lng, lat, range, keyword);
+		}else {
+			 milkTeaShops = milkTeaShopRespository.findMilkTeaShopByUserLocationAndRange(lng, lat, range);
+		}
+	    // Tạo chuỗi GeoJSON
+	    for (MilkTeaShop item : milkTeaShops) {
+	        String temp = GeometryHelper.convertJtsGeometryToGeoJson(item.getPosition()).toString();
+	        JSONObject geometryJson = new JSONObject(temp);
+
+	        JSONObject geoItem = new JSONObject();
+	        geoItem.put("type", "Feature");
+	        geoItem.put("properties", new JSONObject()
+	                .put("name", item.getName())
+	                .put("id", item.getId())
+	                .put("openTime", item.getOpenTime())
+	                .put("closeTime", item.getCloseTime())
+	                .put("address", item.getAddress())
+	                .put("description", item.getDescription())
+	                .put("phoneNumber", item.getPhoneNumber())
+	                .put("roadName", item.getRoad().getName())
+	        );
+	        geoItem.put("geometry", geometryJson);
+	        features.add(geoItem);
+	    }
+
+	    geo.put("type", "FeatureCollection");
+	    geo.put("features", features);
+
+	    responseSearch.put("geoJson", geo);
+
+	    return responseSearch;
+	}
+
+	    
+	
+	
+	
+
+
+
 }
