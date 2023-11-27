@@ -44,6 +44,8 @@ public class Comment implements Serializable {
 	
 	private LocalDate publishedAt;
 	
+	private int totalLikes;
+	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "comment")
 	private List<Gallery> galleries = new ArrayList<>();
 	
@@ -51,10 +53,8 @@ public class Comment implements Serializable {
 	@JsonIgnore
 	private MilkTeaShop milkTeaShop;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonIgnore
 	private User user;
-	
-	private int totalLikes;
 
 }
